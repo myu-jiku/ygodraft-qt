@@ -1,17 +1,18 @@
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import (Qt, Signal, QMargins)
+from PySide6.QtWidgets import (QWidget, QLabel, QPushButton, QLineEdit, QComboBox, QToolButton, QVBoxLayout, QHBoxLayout, QScrollArea, QSizePolicy)
 
 from backend import database
 
 from frontend.card_set_button import CardSetButton
 
 
-class SetSelectionWindow(QtWidgets.QWidget):
+class SetSelectionWindow(QWidget):
     deselect_all: bool = False
     sort_reversed: bool = False
     card_set_widgets: list = None
     selected_sets: list = None
     filtered_sets_quantity: int = 0
-    finished = QtCore.Signal()
+    finished = Signal()
 
     def __init__(self, selected_sets: list = None) -> None:
         self.db_sets: list = database.get_sets()
@@ -24,29 +25,29 @@ class SetSelectionWindow(QtWidgets.QWidget):
         self.generate_sets()
 
     def init_gui(self) -> None:
-        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.main_layout = QVBoxLayout(self)
 
-        self.search_results_label = QtWidgets.QLabel()
-        self.select_all_button = QtWidgets.QPushButton()
-        self.confirm_button = QtWidgets.QPushButton()
+        self.search_results_label = QLabel()
+        self.select_all_button = QPushButton()
+        self.confirm_button = QPushButton()
 
-        self.text_input = QtWidgets.QLineEdit()
-        self.set_type_menu = QtWidgets.QComboBox()
-        self.sort_menu = QtWidgets.QComboBox()
-        self.reverse_sort_button = QtWidgets.QToolButton()
-        self.text_input_holder = QtWidgets.QWidget()
-        self.text_input_holder_layout = QtWidgets.QHBoxLayout(self.text_input_holder)
+        self.text_input = QLineEdit()
+        self.set_type_menu = QComboBox()
+        self.sort_menu = QComboBox()
+        self.reverse_sort_button = QToolButton()
+        self.text_input_holder = QWidget()
+        self.text_input_holder_layout = QHBoxLayout(self.text_input_holder)
         self.text_input_holder_layout.addWidget(self.text_input)
         self.text_input_holder_layout.addWidget(self.set_type_menu)
         self.text_input_holder_layout.addWidget(self.sort_menu)
         self.text_input_holder_layout.addWidget(self.reverse_sort_button)
-        self.text_input_holder_layout.setContentsMargins(QtCore.QMargins())
+        self.text_input_holder_layout.setContentsMargins(QMargins())
 
-        self.scroll_area = QtWidgets.QScrollArea()
-        self.scroll_holder = QtWidgets.QWidget()
-        self.scroll_holder_layout = QtWidgets.QVBoxLayout(self.scroll_holder)
+        self.scroll_area = QScrollArea()
+        self.scroll_holder = QWidget()
+        self.scroll_holder_layout = QVBoxLayout(self.scroll_holder)
         self.scroll_holder_layout.addWidget(self.scroll_area)
-        self.scroll_holder_layout.setContentsMargins(QtCore.QMargins())
+        self.scroll_holder_layout.setContentsMargins(QMargins())
 
         self.main_layout.addWidget(self.text_input_holder)
         self.main_layout.addWidget(self.search_results_label)
@@ -56,8 +57,8 @@ class SetSelectionWindow(QtWidgets.QWidget):
 
         self.text_input.editingFinished.connect(self.generate_sets)
         self.text_input.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding,
-            QtWidgets.QSizePolicy.Preferred
+            QSizePolicy.Expanding,
+            QSizePolicy.Preferred
         )
 
         self.set_type_menu.setPlaceholderText("Product type")
@@ -68,8 +69,8 @@ class SetSelectionWindow(QtWidgets.QWidget):
         self.sort_menu.addItems(["Name", "Date", "Type"])
         self.sort_menu.currentTextChanged.connect(self.generate_sets)
         
-        self.reverse_sort_button.setArrowType(QtCore.Qt.UpArrow)
-        self.reverse_sort_button.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.reverse_sort_button.setArrowType(Qt.UpArrow)
+        self.reverse_sort_button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.reverse_sort_button.clicked.connect(self.change_sort_direction)
 
         self.select_all_button.setText("Select all")
@@ -82,10 +83,10 @@ class SetSelectionWindow(QtWidgets.QWidget):
     def flush_scroll_area(self) -> None:
         self.scroll_holder_layout.removeWidget(self.scroll_area)
 
-        self.scroll_area = QtWidgets.QScrollArea()
+        self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_content = QtWidgets.QWidget()
-        self.scroll_content_layout = QtWidgets.QVBoxLayout(self.scroll_content)
+        self.scroll_content = QWidget()
+        self.scroll_content_layout = QVBoxLayout(self.scroll_content)
 
         self.scroll_holder_layout.addWidget(self.scroll_area)
 
@@ -102,7 +103,7 @@ class SetSelectionWindow(QtWidgets.QWidget):
 
     def change_sort_direction(self) -> None:
         self.sort_reversed = not self.sort_reversed
-        self.reverse_sort_button.setArrowType([QtCore.Qt.UpArrow, QtCore.Qt.DownArrow][self.sort_reversed])
+        self.reverse_sort_button.setArrowType([Qt.UpArrow, Qt.DownArrow][self.sort_reversed])
         self.generate_sets()
 
     def generate_sets(self) -> None:

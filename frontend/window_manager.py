@@ -1,20 +1,20 @@
 from copy import deepcopy, copy
 
-from PySide6 import QtWidgets
+from PySide6.QtWidgets import (QWidget, QVBoxLayout)
 
 
-class WindowManager(QtWidgets.QWidget):
-    root_window: QtWidgets.QWidget
-    void: QtWidgets.QWidget
-    layout: QtWidgets.QVBoxLayout
+class WindowManager(QWidget):
+    root_window: QWidget
+    void: QWidget
+    layout: QVBoxLayout
     opened_windows: list
 
     def __init__(self, RootWindowClass: object) -> None:
         super().__init__()
 
         self.root_window = RootWindowClass()
-        self.void = QtWidgets.QWidget()
-        self.root_layout = QtWidgets.QVBoxLayout(self)
+        self.void = QWidget()
+        self.root_layout = QVBoxLayout(self)
         self.opened_windows = []
 
         self.show_current_window()
@@ -24,17 +24,17 @@ class WindowManager(QtWidgets.QWidget):
         self.opened_windows = self.opened_windows[:-steps]
         self.show_current_window()
 
-    def replace_window(self, new_window: QtWidgets.QWidget, replace_count: int = 1) -> None:
+    def replace_window(self, new_window: QWidget, replace_count: int = 1) -> None:
         self.close_window()
         self.opened_windows = self.opened_windows[:-replace_count] + [new_window]
         self.show_current_window()
 
-    def open_windows(self, *windows: QtWidgets.QWidget) -> None:
+    def open_windows(self, *windows: QWidget) -> None:
         self.close_window()
         self.opened_windows = self.opened_windows + windows
         self.show_current_window()
 
-    def open_window(self, window: QtWidgets.QWidget) -> None:
+    def open_window(self, window: QWidget) -> None:
         self.close_window()
         self.opened_windows.append(window)
         self.show_current_window()

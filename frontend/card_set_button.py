@@ -1,10 +1,11 @@
-from PySide6 import QtWidgets, QtCore
+from PySide6.QtCore import (Signal, Qt)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy, QLabel)
 
 
-class CardSetButton(QtWidgets.QWidget):
+class CardSetButton(QWidget):
     labels: dict = None
     selected: bool = False
-    switched = QtCore.Signal()
+    switched = Signal()
 
     def __init__(self, set_data: dict) -> None:
         self.labels = self.labels or {}
@@ -15,14 +16,14 @@ class CardSetButton(QtWidgets.QWidget):
         self.generate_labels(set_data)
 
     def init_gui(self) -> None:
-        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.main_layout = QVBoxLayout(self)
         
-        self.frame = QtWidgets.QFrame()
-        self.frame_layout = QtWidgets.QHBoxLayout(self.frame)
+        self.frame = QFrame()
+        self.frame_layout = QHBoxLayout(self.frame)
         self.main_layout.addWidget(self.frame)
 
     def set_gui_parameters(self) -> None:
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
         self.frame.setFrameShape(self.frame.Panel)
         self.frame.setFrameShadow(self.frame.Raised)
@@ -31,14 +32,14 @@ class CardSetButton(QtWidgets.QWidget):
         first_widget: bool = True
 
         for label, data in set_data.items():
-            widget = QtWidgets.QLabel(data)
+            widget = QLabel(data)
 
             if first_widget:
                 first_widget = False
             else:
-                widget.setAlignment(QtCore.Qt.AlignCenter)
+                widget.setAlignment(Qt.AlignCenter)
 
-                line = QtWidgets.QFrame()
+                line = QFrame()
                 line.setFrameShape(line.VLine)
                 line.setFrameShadow(line.Raised)
                 self.frame_layout.addWidget(line)

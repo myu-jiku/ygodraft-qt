@@ -1,6 +1,8 @@
 from collections import Counter
 
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import (Qt, Signal)
+from PySide6.QtGui import (QCursor)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout)
 
 from backend import collection
 from backend import database
@@ -9,14 +11,14 @@ from backend import draft
 from frontend import draft_ui
 
 
-class RoundDraftWindow(QtWidgets.QWidget):
+class RoundDraftWindow(QWidget):
     rounds: int
     card_bundles: int
     cards_per_bundle: int
     duplicates_in_pool: int
     card_sets: list
     selected_cards: Counter
-    draft_finished = QtCore.Signal()
+    draft_finished = Signal()
 
     def __init__(
         self,
@@ -37,7 +39,7 @@ class RoundDraftWindow(QtWidgets.QWidget):
         self.create_draft_window()
 
     def setup(self) -> None:
-        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.main_layout = QVBoxLayout(self)
         self.draft_window = draft_ui.DraftSubWindow()
 
         self.round_counter: int = 1
@@ -75,7 +77,7 @@ class RoundDraftWindow(QtWidgets.QWidget):
     def refresh_selected_cards_tab(self) -> None:
         if not self.draft_window.selected_cards_tab.selected_cards_generated \
         and self.draft_window.currentIndex() == 1:
-            self.setCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+            self.setCursor(QCursor(Qt.WaitCursor))
             self.draft_window.selected_cards_tab.generate_selected_cards(self.selected_cards)
-            self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+            self.setCursor(QCursor(Qt.ArrowCursor))
 
