@@ -72,7 +72,9 @@ class RoundDraftWindow(QWidget):
             collection.export_as_banlist("default", overwrite_file=True)
             self.parent().go_back()
         else:
-            self.download_cache = self.draft_window.draft_tab.download_cache[-50:]
+            self.download_cache = self.draft_window.draft_tab.download_cache
+            tmp: set = set(self.card_pool)
+            self.download_cache = [card for card in self.download_cache if card in tmp][-50:]
             print(self.download_cache)
             self.draft_window.deleteLater()
             self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
