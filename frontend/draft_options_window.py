@@ -61,15 +61,15 @@ class DraftOptionsWindow(QWidget):
         
         defaults: dict = settings.access_settings()
 
-        self.draft_rounds_box = OptionBox("Draft Rounds", 300)
+        self.draft_rounds_box = OptionBox("Draft Rounds", 200)
         self.draft_rounds_box.setValue(defaults["draft_rounds"])
         self.set_size(self.draft_rounds_box)
 
-        self.card_bundles_box = OptionBox("Card Bundles/Choices", 50)
+        self.card_bundles_box = OptionBox("Card Bundles/Choices", 20)
         self.card_bundles_box.setValue(defaults["card_bundles"])
         self.set_size(self.card_bundles_box)
 
-        self.cards_per_bundle_box = OptionBox("Cards per Bundle", 50)
+        self.cards_per_bundle_box = OptionBox("Cards per Bundle", 30)
         self.cards_per_bundle_box.setValue(defaults["cards_per_bundle"])
         self.set_size(self.cards_per_bundle_box)
 
