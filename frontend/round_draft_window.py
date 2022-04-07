@@ -1,11 +1,11 @@
 from collections import Counter
+from copy import copy
 
 from PySide6.QtCore import (Qt, Signal)
 from PySide6.QtGui import (QCursor)
 from PySide6.QtWidgets import (QWidget, QVBoxLayout)
 
 from backend import collection
-from backend import database
 from backend import draft
 
 from frontend import draft_ui
@@ -16,7 +16,7 @@ class RoundDraftWindow(QWidget):
     card_bundles: int
     cards_per_bundle: int
     duplicates_in_pool: int
-    card_sets: list
+    card_pool: list
     selected_cards: Counter
     draft_finished = Signal()
 
@@ -26,13 +26,13 @@ class RoundDraftWindow(QWidget):
         card_bundles: int,
         cards_per_bundle: int,
         duplicates_in_pool: int,
-        card_sets: list
+        card_pool: list
     ) -> None:
         self.rounds = rounds
         self.card_bundles = card_bundles
         self.cards_per_bundle = cards_per_bundle
         self.duplicates_in_pool = duplicates_in_pool
-        self.card_sets = card_sets
+        self.card_pool = copy(card_pool)
 
         super().__init__()
         self.setup()
@@ -43,7 +43,7 @@ class RoundDraftWindow(QWidget):
         self.draft_window = draft_ui.DraftSubWindow()
 
         self.round_counter: int = 1
-        self.card_pool = database.get_cards_from_sets(self.card_sets) * self.duplicates_in_pool
+        self.card_pool = self.card_pool * self.duplicates_in_pool
         self.selected_cards = Counter()
         self.choices = []
 

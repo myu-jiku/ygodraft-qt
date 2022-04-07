@@ -30,7 +30,7 @@ class SetSelectionWindow(QWidget):
         self.search_results_label = QLabel()
         self.select_all_button = QPushButton()
         self.confirm_button = QPushButton()
-
+        
         self.text_input = QLineEdit()
         self.set_type_menu = QComboBox()
         self.sort_menu = QComboBox()
@@ -43,6 +43,9 @@ class SetSelectionWindow(QWidget):
         self.text_input_holder_layout.addWidget(self.reverse_sort_button)
         self.text_input_holder_layout.setContentsMargins(QMargins())
 
+        self.column_descriptions = QWidget()
+        self.column_descriptions_layout = QHBoxLayout(self.column_descriptions)
+
         self.scroll_area = QScrollArea()
         self.scroll_holder = QWidget()
         self.scroll_holder_layout = QVBoxLayout(self.scroll_holder)
@@ -51,8 +54,9 @@ class SetSelectionWindow(QWidget):
 
         self.main_layout.addWidget(self.text_input_holder)
         self.main_layout.addWidget(self.search_results_label)
-        self.main_layout.addWidget(self.scroll_holder)
         self.main_layout.addWidget(self.select_all_button)
+        self.main_layout.addWidget(self.column_descriptions)
+        self.main_layout.addWidget(self.scroll_holder)
         self.main_layout.addWidget(self.confirm_button)
 
         self.text_input.editingFinished.connect(self.generate_sets)
@@ -77,7 +81,13 @@ class SetSelectionWindow(QWidget):
         self.select_all_button.clicked.connect(self.select_all)
         self.select_all_button.setCheckable(True)
 
+        self.column_descriptions_layout.addWidget(QLabel(text=f"{3 * ' '}Product Name"))
+        self.column_descriptions_layout.addWidget(QLabel(text=f"Release Date{5 * ' '}", alignment=Qt.AlignCenter))
+        self.column_descriptions_layout.addWidget(QLabel(text=f"Category{15 * ' '}", alignment=Qt.AlignCenter))
+
         self.confirm_button.setText("Confirm")
+        self.confirm_button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
+        self.confirm_button.setMaximumSize(16777215, 50)
         self.confirm_button.clicked.connect(self.finished.emit)
 
     def flush_scroll_area(self) -> None:

@@ -33,8 +33,10 @@ class CardSetButton(QWidget):
 
         for label, data in set_data.items():
             widget = QLabel(data)
+            widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
 
             if first_widget:
+                self.setToolTip(data)
                 first_widget = False
             else:
                 widget.setAlignment(Qt.AlignCenter)

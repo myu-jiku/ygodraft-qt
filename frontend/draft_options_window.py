@@ -1,6 +1,9 @@
+from copy import copy
+
 from PySide6.QtCore import (QSize)
 from PySide6.QtWidgets import (QWidget, QGridLayout, QHBoxLayout, QSizePolicy, QLabel, QFrame, QSpinBox, QPushButton)
 
+from backend import database
 from backend import settings
 
 from frontend.round_draft_window import RoundDraftWindow
@@ -50,7 +53,7 @@ class DraftOptionsWindow(QWidget):
         self.setup_ui()
 
     def init_vars(self) -> None:
-        self.selected_sets = []
+        self.cards_in_sets: list = []
         self.layout_position: int = 0
 
     def setup_ui(self) -> None:
@@ -96,7 +99,7 @@ class DraftOptionsWindow(QWidget):
 
     def set_size(self, widget: QWidget) -> None:
         widget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        widget.setMaximumSize(QSize(16777215, 100))
+        widget.setMaximumSize(QSize(16777215, 80))
 
     def add_to_layout(self, widget1: QWidget, widget2: QWidget = None) -> None:
         if widget2:
@@ -111,10 +114,12 @@ class DraftOptionsWindow(QWidget):
         parent = self.parent()
 
         def change_selected_sets():
+            selected_sets = copy(self.selected_sets)
             self.selected_sets = parent.get_current_widget().get_selected_sets()
             
-            if self.selected_sets:
+            if self.selected_sets and self.selected_sets != selected_sets:
                 self.start_draft_button.setEnabled(True)
+                self.cards_in_sets = database.get_cards_from_sets(self.selected_sets)
             else:
                 self.start_draft_button.setEnabled(False)
 
@@ -129,5 +134,5 @@ class DraftOptionsWindow(QWidget):
             self.card_bundles_box.value(),
             self.cards_per_bundle_box.value(),
             self.duplicates_box.value(),
-            self.selected_sets
+            self.cards_in_sets
         ))
