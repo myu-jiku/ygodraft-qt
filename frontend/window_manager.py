@@ -20,9 +20,10 @@ class WindowManager(QWidget):
         self.show_current_window()
 
     def go_back(self, steps: int = 1) -> None:
-        self.close_window()
-        self.opened_windows = self.opened_windows[:-steps]
-        self.show_current_window()
+        if self.opened_windows:
+            self.close_window()
+            self.opened_windows = self.opened_windows[:-steps]
+            self.show_current_window()
 
     def replace_window(self, new_window: QWidget, replace_count: int = 1) -> None:
         self.close_window()
