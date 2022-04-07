@@ -65,33 +65,57 @@ def placeholder_from_string(name: str):
     return get_image_path(placeholder)
 
 
-def download_missing(retries: int = 0) -> None:
-    db: dict = database.get_cards()
+def download_all() -> None:
+    download_placeholders()
+    download_missing(database.get_cards("id"))
+
+
+def download_placeholders() -> None:
+    download_missing(placeholders)
+
+
+def download_missing(cards: list, retries: int = 0, cache: list = None) -> list:
+    number_of_cards: int = len(cards)
     cards_missed: bool = False
 
     ensure_directory()
 
-    for index, card in enumerate((*placeholders, *db)):
-        print(f"{index}/{len(db)} ({int(index/len(db)*100)}%) {db.get(card, {'name': ''})['name']}")
+    cache_given: bool = cache is not None
+    new_cache: list = []
+
+    for index, card in enumerate(cards):
+        if cache_given and card in cache:
+            continue
+
+        print(f"{index + 1}/{number_of_cards}")
         download_successful = download_card(card)
-        
-        if not cards_missed and not download_successful:
+
+        if download_successful and cache_given:
+            new_cache.append(card)
+        elif not cards_missed:
             cards_missed = True
 
     if cards_missed and retries:
         get_missing_card_images(retries - 1)
 
+    if cache_given:
+        return cache + new_cache
 
-def download_card(card_id: int) -> bool:
+
+def download_card(card_id: int, offset: int = 0) -> bool:
     path: str = get_image_path(card_id)
 
     if not os.path.isfile(path):
-        url: str = f"{images[get_image_type()]['url']}{card_id}.jpg"
+        url: str = f"{images[get_image_type()]['url']}{card_id + offset}.jpg"
         response = requests.get(url)
 
         if response.status_code != 200:
             print(response.status_code, url)
-            return False
+
+            if offset:
+                return False
+
+            return download_card(card_id, 1) or download_card(card_id, -1)
 
         with open(path, "wb") as file:
             file.write(response.content)

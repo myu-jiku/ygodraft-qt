@@ -14,7 +14,9 @@ generic_wiki_url: str = "https://yugipedia.com/wiki/"
 
 
 class DraftTab(QWidget):
-    def __init__(self) -> None:
+    def __init__(self, download_cache: list) -> None:
+        self.download_cache = download_cache
+
         super().__init__()
         self.setup()
 
@@ -29,6 +31,8 @@ class DraftTab(QWidget):
 
     def generate_choices(self, choices: list) -> None:
         for index, choice in enumerate(choices):
+            self.download_cache = card_images.download_missing(choice, cache=self.download_cache)
+
             page = QWidget()
             page_layout = QHBoxLayout(page)
 
@@ -114,12 +118,14 @@ class SelectedCardsTab(QWidget):
 
 
 class DraftSubWindow(QTabWidget):
-    def __init__(self) -> None:
+    def __init__(self, download_cache: list) -> None:
+        self.download_cache = download_cache
+
         super().__init__()
         self.setup()
 
     def setup(self) -> None:
-        self.draft_tab = DraftTab()
+        self.draft_tab = DraftTab(self.download_cache)
         self.selected_cards_tab = SelectedCardsTab()
 
         self.addTab(self.draft_tab, "Draft")

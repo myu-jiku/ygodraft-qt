@@ -120,7 +120,7 @@ class DraftOptionsWindow(QWidget):
             if self.selected_sets and self.selected_sets != selected_sets:
                 self.start_draft_button.setEnabled(True)
                 self.cards_in_sets = database.get_cards_from_sets(self.selected_sets)
-            else:
+            elif not self.selected_sets:
                 self.start_draft_button.setEnabled(False)
 
             parent.go_back()

@@ -20,7 +20,7 @@ if __name__ == "__main__":
         def init_buttons(self):
             self.add_button("Draft", lambda: self.parent().open_window(DraftOptionsWindow()))
             self.add_button("Update", database.update)
-            self.add_button("Download Images", card_images.download_missing)
+            self.add_button("Download All Images", card_images.download_all)
 
     window_manager = WindowManager(MainMenu)
 

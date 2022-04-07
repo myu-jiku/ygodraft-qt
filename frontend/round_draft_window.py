@@ -39,8 +39,10 @@ class RoundDraftWindow(QWidget):
         self.create_draft_window()
 
     def setup(self) -> None:
+        self.download_cache: list = []
+
         self.main_layout = QVBoxLayout(self)
-        self.draft_window = draft_ui.DraftSubWindow()
+        self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
 
         self.round_counter: int = 1
         self.card_pool = self.card_pool * self.duplicates_in_pool
@@ -70,8 +72,10 @@ class RoundDraftWindow(QWidget):
             collection.export_as_banlist("default", overwrite_file=True)
             self.parent().go_back()
         else:
+            self.download_cache = self.draft_window.draft_tab.download_cache[-50:]
+            print(self.download_cache)
             self.draft_window.deleteLater()
-            self.draft_window = draft_ui.DraftSubWindow()
+            self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
             self.create_draft_window()
 
     def refresh_selected_cards_tab(self) -> None:
