@@ -8,6 +8,7 @@ from backend import database
 
 from frontend.abstract_menu import AbstractMenu
 from frontend.draft_options_window import DraftOptionsWindow
+from frontend.edit_collections_menu import EditCollectionsMenu
 from frontend.window_manager import WindowManager
 
 
@@ -21,20 +22,9 @@ if __name__ == "__main__":
     class MainMenu(AbstractMenu):
         def init_buttons(self):
             self.add_button("Draft", lambda: self.parent().open_window(DraftOptionsWindow()))
+            self.add_button("Collections", lambda: self.parent().open_window(EditCollectionsMenu()))
             self.add_button("Update", database.update)
             self.add_button("Download All Images", card_images.download_all)
-            from frontend.edit_collections_menu import EditCollectionsMenu
-
-            parent = self.parent()
-            def open_collections_menu(replace_window: bool = False):
-                nonlocal parent
-                if not parent:
-                    parent = self.parent()
-                collections_menu = EditCollectionsMenu()
-                collections_menu.collections_changed.connect(lambda: open_collections_menu(True))
-                [parent.open_window, parent.replace_window][replace_window](collections_menu)
-
-            self.add_button("test", open_collections_menu)
 
     window_manager = WindowManager(MainMenu)
 

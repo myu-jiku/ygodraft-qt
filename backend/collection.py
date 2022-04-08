@@ -10,6 +10,15 @@ directory: str = "collections/"
 version: int = 1
 
 
+def search(name: str) -> list:
+    collections = get_collections()
+
+    if name:
+        collections = list(filter(lambda collection: name in collection, collections))
+
+    return collections
+
+
 def get_cards(name: str) -> dict:
     return read(name)["cards"]
 

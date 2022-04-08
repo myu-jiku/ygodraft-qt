@@ -88,6 +88,7 @@ class SetSelectionWindow(QWidget):
         self.confirm_button.setText("Confirm")
         self.confirm_button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
         self.confirm_button.setMaximumSize(16777215, 50)
+        self.confirm_button.setMinimumSize(0, 50)
         self.confirm_button.clicked.connect(self.finished.emit)
 
     def flush_scroll_area(self) -> None:

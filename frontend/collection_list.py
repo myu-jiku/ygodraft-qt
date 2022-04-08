@@ -4,10 +4,10 @@ from backend import collection
 
 
 class CollectionList(QListWidget):
-    def __init__(self) -> None:
+    def __init__(self, search_filter: str = "") -> None:
         super().__init__()
-        self.init_items()
 
-    def init_items(self) -> None:
-        self.addItems(collection.get_collections())
+        items = collection.search(search_filter)
+        items.sort()
+        self.addItems(items)
 

@@ -75,6 +75,7 @@ class RoundDraftWindow(QWidget):
             self.download_cache = self.draft_window.draft_tab.download_cache
             tmp: set = set(self.card_pool)
             self.download_cache = [card for card in self.download_cache if card in tmp][-50:]
+            del tmp
             print(self.download_cache)
             self.draft_window.deleteLater()
             self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
