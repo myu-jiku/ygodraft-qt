@@ -9,6 +9,7 @@ from backend import collection
 from backend import draft
 
 from frontend import draft_ui
+from frontend.post_draft_menu import PostDraftMenu
 
 
 class RoundDraftWindow(QWidget):
@@ -18,7 +19,7 @@ class RoundDraftWindow(QWidget):
     duplicates_in_pool: int
     card_pool: list
     selected_cards: Counter
-    draft_finished = Signal()
+    #draft_finished = Signal()
 
     def __init__(
         self,
@@ -63,14 +64,8 @@ class RoundDraftWindow(QWidget):
         self.selected_cards = self.selected_cards + Counter(choice)
 
         if self.round_counter > self.rounds:
-            self.draft_finished.emit()
-            try:
-                collection.new("default")
-            except FileExistsError:
-                pass
-            collection.add_cards("default", self.selected_cards)
-            collection.export_as_banlist("default", overwrite_file=True)
-            self.parent().go_back()
+            self.parent().replace_window(PostDraftMenu(self.selected_cards))
+            #self.draft_finished.emit()
         else:
             self.download_cache = self.draft_window.draft_tab.download_cache
             tmp: set = set(self.card_pool)

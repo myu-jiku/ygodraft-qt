@@ -58,7 +58,6 @@ def export_as_banlist(name: str, path: str = "", target_name: str = None, overwr
     
     slash: chr = '/' * (bool(path) and bool(("  " + path)[-2] != '/'))
     full_path: str = f"{path}{slash}{target_name}.conf"
-    print(slash)
 
     if os.path.isfile(full_path) and not overwrite_file:
         raise FileExistsError(f"File with name \"{name}\" already exists")

@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     import sys
 
-    app = QApplication()
+    app = QApplication(sys.argv)
 
     class MainMenu(AbstractMenu):
         def init_buttons(self):
