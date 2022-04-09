@@ -46,7 +46,7 @@ def random_placeholder() -> str:
 
 def random_cropped_image(download_new: bool = True) -> str:
     image_type.append("cropped")
-    card_ids: list = list(database.get_cards().keys())
+    card_ids: list = list(database.get_cards("id"))
     card_id: int = choice(card_ids)
 
     ensure_directory()

@@ -32,6 +32,10 @@ if __name__ == "__main__":
     main_window.setCentralWidget(window_manager)
     main_window.resize(800, 600)
 
+    app_icon = QIcon(card_images.random_cropped_image())
+    main_window.setWindowIcon(app_icon)
+    main_window.setWindowTitle("YGO Draft")
+
     tool_bar = QToolBar()
     tool_bar.setMovable(False)
     tool_bar.setContextMenuPolicy(Qt.PreventContextMenu)
