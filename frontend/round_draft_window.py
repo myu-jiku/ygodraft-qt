@@ -3,7 +3,7 @@ from copy import copy
 
 from PySide6.QtCore import (Qt, Signal)
 from PySide6.QtGui import (QCursor)
-from PySide6.QtWidgets import (QWidget, QVBoxLayout)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel)
 
 from backend import collection
 from backend import draft
@@ -43,12 +43,15 @@ class RoundDraftWindow(QWidget):
         self.download_cache: list = []
 
         self.main_layout = QVBoxLayout(self)
+        self.round_indicator = QLabel(text=f"Round 1/{self.rounds}")
         self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
 
         self.round_counter: int = 1
         self.card_pool = self.card_pool * self.duplicates_in_pool
         self.selected_cards = Counter()
         self.choices = []
+
+        self.main_layout.addWidget(self.round_indicator)
 
     def create_draft_window(self) -> None:
         self.choices, self.card_pool = draft.generate_bundles_and_get_new_pool(self.card_pool, self.card_bundles, self.cards_per_bundle)
@@ -67,11 +70,13 @@ class RoundDraftWindow(QWidget):
             self.parent().replace_window(PostDraftMenu(self.selected_cards))
             #self.draft_finished.emit()
         else:
+            self.round_indicator.setText(f"Round {self.round_counter}/{self.rounds}")
+
             self.download_cache = self.draft_window.draft_tab.download_cache
             tmp: set = set(self.card_pool)
             self.download_cache = [card for card in self.download_cache if card in tmp][-50:]
             del tmp
-            print(self.download_cache)
+
             self.draft_window.deleteLater()
             self.draft_window = draft_ui.DraftSubWindow(self.download_cache)
             self.create_draft_window()
