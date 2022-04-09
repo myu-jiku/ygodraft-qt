@@ -55,6 +55,7 @@ class CardSetButton(QWidget):
         self.frame.setFrameShadow([self.frame.Raised, self.frame.Plain][self.selected])
 
     def mousePressEvent(self, event) -> None:
-        self.selected = not self.selected
-        self.update_frame_style()
-        self.switched.emit()
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.selected = not self.selected
+            self.update_frame_style()
+            self.switched.emit()
