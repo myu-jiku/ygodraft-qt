@@ -67,8 +67,8 @@ class EditCollectionsMenu(QWidget):
             rename
         ))
 
+        popup.buttons.accepted.connect(self.update_list)
         popup.exec()
-        self.update_list()
 
     def export_collection(self) -> None:
         collection_name = self.collection_list.currentItem().text()
@@ -85,8 +85,8 @@ class EditCollectionsMenu(QWidget):
 
         popup = PopupDialog(f"Do you want to delete the collection '{collection_name}'?")
         popup.buttons.accepted.connect(lambda: collection.delete(collection_name))
+        popup.buttons.accepted.connect(self.update_list)
         popup.exec()
-        self.update_list()
 
     def update_list(self) -> None:
         self.collection_list.setParent(QWidget())
