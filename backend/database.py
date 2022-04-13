@@ -1,19 +1,18 @@
 import calendar
 import json
-import os
 import requests
-
 from bs4 import BeautifulSoup
 from itertools import groupby
 
+from backend import paths
+
  
 api_url: str = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
-location: str = "card_db.json"
 version: int = 1
 
 
 def verify_and_update() -> None:
-    if not os.path.isfile(location) or get_data()["version"] != version:
+    if not paths.db_path.is_file() or get_data()["version"] != version:
         update()
 
 def filter_sets_and_return_attributes(name: str, sets: list = None) -> list:
@@ -76,7 +75,7 @@ def get_sets() -> list:
 
 
 def get_data() -> dict:
-    with open(location, "r") as file:
+    with open(paths.db_path, "r") as file:
         data = file.read()
 
     return json.loads(data)
@@ -114,7 +113,7 @@ def update() -> None:
     del cards
 
     # write database to storage
-    with open(location, "w") as file:
+    with open(paths.db_path, "w") as file:
         file.write(card_database)
 
 
@@ -218,8 +217,11 @@ def _get_product_release_dates_from_yugipedia() -> dict:
 
     # the edit view makes it easier to separate information 
     # and makes it possible to only work with TCG sets from the start
-    url: str = "https://yugipedia.com/wiki/Order_of_Set_Release?action=edit&section=304"
+    url: str = "https://yugipedia.com/wiki/Order_of_Set_Release?action=edit&section=305"
     response: requests.Response = requests.get(url)
+
+    print(response.status_code)
+
     soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
     text_area: str = soup.find("textarea").string
@@ -268,3 +270,4 @@ class ResponseStatusError(Exception):
     def __init__(self, status_code: int):
         super().__init__(f"YGOPRODECK API returned status code {status_code}")
 
+import os

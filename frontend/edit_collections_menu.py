@@ -1,11 +1,11 @@
 
 from PySide6.QtCore import (QEvent, Qt, Signal, QSize)
-from PySide6.QtGui import (QIcon)
 from PySide6.QtWidgets import (QWidget, QGridLayout, QMenu, QToolButton, QLineEdit)
 
 from backend import collection
 
 from frontend.collection_list import CollectionList
+from frontend.icon import Icon
 from frontend.popup_dialog import PopupDialog
 
 
@@ -32,8 +32,7 @@ class EditCollectionsMenu(QWidget):
         self.search_bar.editingFinished.connect(self.update_list)
 
         self.add_collection_button = QToolButton()
-        plus_icon = QIcon()
-        plus_icon.addFile("images/ui/plus_icon.svgz", QSize(), QIcon.Normal, QIcon.Off)
+        plus_icon = Icon("ui/plus_icon.svgz")
         self.add_collection_button.setIcon(plus_icon)
         self.add_collection_button.clicked.connect(self.new_collection)
 

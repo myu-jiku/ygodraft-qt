@@ -1,12 +1,10 @@
-import os
 import json
+from collections import Counter
+from pathlib import Path
 
 from backend import database
-from collections import Counter
-from glob import glob
+from backend import paths
 
-
-directory: str = "collections/"
 version: int = 1
 
 
@@ -53,13 +51,11 @@ def add_cards(name: str, cards: list, subtract: bool = False) -> None:
     write(name, collection)
 
 
-def export_as_banlist(name: str, path: str = "", target_name: str = None, overwrite_file: bool = False) -> None:
-    target_name = target_name or name
-    
-    slash: chr = '/' * (bool(path) and bool(("  " + path)[-2] != '/'))
-    full_path: str = f"{path}{slash}{target_name}.conf"
+def export_as_banlist(name: str, path: str = "", target_name: str = "", overwrite_file: bool = False) -> None:
+    target_name = target_name or f"{name}.conf"
+    target_path: Path = Path(path or paths.root_dir) / target_name
 
-    if os.path.isfile(full_path) and not overwrite_file:
+    if target_path.is_file() and not overwrite_file:
         raise FileExistsError(f"File with name \"{name}\" already exists")
 
     lines = [f"!{name}\n$whitelist\n", *_format_as_lflist(name)]
@@ -96,16 +92,16 @@ def new(name: str) -> str:
 
 
 def delete(name: str) -> None:
-    os.remove(get_path(name))
+    (paths.collection_dir / name).unlink()
 
 
 def ensure_directory() -> None:
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not paths.collection_dir.is_dir():
+        paths.collection_dir.mkdir()
 
 
 def read(name: str) -> dict:
-    with open(get_path(name), "r") as file:
+    with open(paths.collection_dir / name, "r") as file:
         collection = file.read()
 
     return json.loads(collection)
@@ -114,7 +110,7 @@ def read(name: str) -> dict:
 def write(name: str, collection: dict) -> None:
     json_string = json.dumps(collection)
 
-    with open(get_path(name), "w") as file:
+    with open(paths.collection_dir / name, "w") as file:
         file.write(json_string)
 
 
@@ -129,12 +125,8 @@ def template() -> dict:
     }
 
 
-def get_path(name: str) -> str:
-    return directory + name
-
-
 def get_collections() -> list:
-    return glob("*", root_dir=directory)
+    return [p.name for p in paths.collection_dir.glob("*")]
 
 
 def _format_as_lflist(name: str) -> list:

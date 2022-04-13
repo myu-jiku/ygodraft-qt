@@ -1,8 +1,6 @@
 import json
-import os
 
-
-path: str = "settings.json"
+from backend import paths
 
 
 def get(option: str) -> object:
@@ -41,12 +39,12 @@ def insert_into_defaults(settings: dict) -> dict:
 
 
 def ensure_file() -> None:
-    if not os.path.isfile(path):
+    if not paths.settings_path.is_file():
         write({})
 
 
 def read() -> dict:
-    with open(path, "r") as file:
+    with open(paths.settings_path, "r") as file:
         data = file.read()
 
     return json.loads(data)
@@ -55,5 +53,5 @@ def read() -> dict:
 def write(settings: dict) -> None:
     data = json.dumps(settings)
 
-    with open(path, "w") as file:
+    with open(paths.settings_path, "w") as file:
         file.write(data)
